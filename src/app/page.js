@@ -1,101 +1,83 @@
-import Image from "next/image";
+"use client";
+
+import { useState, useEffect } from 'react';
+import JobCard from '@/components/JobCard';
+import ToggleButtons from '@/components/ToggleButtons';
+import BurgerMenu from '@/components/BurgerMenu';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [activeTab, setActiveTab] = useState('latest');
+  const [jobData, setJobData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false); // For loading state
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  // Fetch job data from the backend
+  const fetchJobs = async () => {
+    setIsLoading(true); // Set loading to true before fetching data
+    try {
+      console.log(`Fetching jobs for tab: ${activeTab}`); // Debug log
+      const response = await fetch(
+        activeTab === 'latest'
+          ? 'http://localhost:4000/latest-jobs'
+          : 'http://localhost:4000/all-jobs'
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch jobs');
+      }
+
+      const data = await response.json();
+      console.log("Fetched job data:", data); // Debug log
+      setJobData(data);
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setIsLoading(false); // Set loading to false after fetch completes
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, [activeTab]);
+
+  return (
+    <div className="relative h-screen overflow-hidden">
+      {/* bg image - stays fixed */}
+      <img className="fixed inset-0 h-full w-full object-cover -z-50" src=".\Vector 1.png" alt="Background" />
+
+      {/* Blur container - stays fixed */}
+      <div className="fixed inset-0 z-40 backdrop-blur-[60px] bg-opacity-50"></div>
+
+      {/* Scrollable content */}
+      <div className="relative z-50 h-full overflow-y-auto">
+        <div className="absolute top-4 text-4xl left-4">
+          <h1>HireLink</h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="absolute top-6 right-10">
+          <BurgerMenu /> 
+        </div>
+
+        {/* Toggle buttons */}
+        <div className="flex justify-center items-center w-full absolute top-20">
+          <ToggleButtons activeTab={activeTab} setActiveTab={setActiveTab} />
+        </div>
+
+        {/* Job cards container */}
+        <div className="flex flex-col items-center mt-36 space-y-4">
+          {isLoading ? (
+            <p>Loading jobs...</p>
+          ) : (
+            jobData.map((job) => (
+              <JobCard
+                key={job._id} // MongoDB provides _id
+                title={job.title}
+                description={job.description}
+                link={job.link}
+                
+              />
+            ))
+          )}
+        </div>
+      </div>
     </div>
   );
 }
