@@ -17,8 +17,8 @@ export default function Home() {
       console.log(`Fetching jobs for tab: ${activeTab}`); // Debug log
       const response = await fetch(
         activeTab === 'latest'
-          ? 'http://localhost:4000/latest-jobs'
-          : 'http://localhost:4000/all-jobs'
+          ? 'https://hire-link-ten.vercel.app/latest-jobs'
+          : 'https://hire-link-ten.vercel.app/all-jobs'
       );
 
       if (!response.ok) {
