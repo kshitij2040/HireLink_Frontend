@@ -35,6 +35,7 @@ export default function AddCompanyForm() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`, // Add token to Authorization header
         },
+        credentials: "include", 
         body: JSON.stringify(jobData),
       });
 
