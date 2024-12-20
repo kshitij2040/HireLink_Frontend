@@ -29,7 +29,7 @@ export default function AddCompanyForm() {
     const jobData = { title, description, link };
 
     try {
-      const response = await fetch("https://hire-link-ten.vercel.app/add-job", {
+      const response = await fetch("https://hire-link-ten.vercel.app/add-job/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
