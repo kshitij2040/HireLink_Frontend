@@ -16,7 +16,7 @@ export const metadata = {
   title: "HireLink",
   description: "A platform to connect job seekers with employers",
   icons: {
-    icon: "/icon.ico", 
+    icon: "/Ellipse 2.ico", 
   },
 };
 
